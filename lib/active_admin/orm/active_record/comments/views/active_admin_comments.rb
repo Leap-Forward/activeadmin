@@ -24,11 +24,18 @@ module ActiveAdmin
         end
 
         def build_comments
-          @comments.any? ? @comments.each(&method(:build_comment)) : build_empty_message
           build_comment_form
+          @comments.any? ? build_comment_list(@comments) : build_empty_message
         end
 
-        def build_comment(comment)
+        def build_comment_list comments, indent=0
+          comments.each do | comment |
+            build_comment comment, indent
+            build_comment_list comment.replies, indent+1
+          end
+        end
+
+        def build_comment(comment, indent=0)
           div for: comment do
             div class: 'active_admin_comment_meta' do
               h4 class: 'active_admin_comment_author' do
@@ -39,7 +46,7 @@ module ActiveAdmin
                 text_node link_to I18n.t('active_admin.comments.delete'), comments_url(comment.id), method: :delete, data: { confirm: I18n.t('active_admin.comments.delete_confirmation') }
               end
             end
-            div class: 'active_admin_comment_body' do
+            div class: "active_admin_comment_body indent-#{indent}" do
               simple_format comment.body
             end
           end
@@ -67,13 +74,17 @@ module ActiveAdmin
 
         def build_comment_form
           active_admin_form_for(ActiveAdmin::Comment.new, url: comment_form_url) do |f|
-            f.inputs do
-              f.input :resource_type, as: :hidden,  input_html: { value: ActiveAdmin::Comment.resource_type(parent.resource) }
-              f.input :resource_id,   as: :hidden,  input_html: { value: parent.resource.id }
-              f.input :body,          label: false, input_html: { size: '80x8' }
+            div class: 'active_admin_comment_meta' do
+              f.actions do
+                f.action :submit, label: 'New Comment'
+              end
             end
-            f.actions do
-              f.action :submit, label: I18n.t('active_admin.comments.add')
+            div class: "active_admin_comment_body" do
+              f.inputs do
+                f.input :resource_type, as: :hidden,  input_html: { value: ActiveAdmin::Comment.resource_type(parent.resource) }
+                f.input :resource_id,   as: :hidden,  input_html: { value: parent.resource.id }
+                f.input :body,          label: false, input_html: { size: '80x8' }
+              end
             end
           end
         end

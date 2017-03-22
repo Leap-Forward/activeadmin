@@ -5,6 +5,9 @@ module ActiveAdmin
 
     belongs_to :resource, polymorphic: true
     belongs_to :author,   polymorphic: true
+    has_many :replies, inverse_of: :replied_to, class_name: "ActiveAdmin::Comment", foreign_key: "replied_to_id", dependent: :destroy
+    belongs_to :replied_to, class_name: "ActiveAdmin::Comment", foreign_key: "replied_to_id",  inverse_of: :replies
+
 
     if defined? ProtectedAttributes
       attr_accessible :resource, :resource_id, :resource_type, :body, :namespace
@@ -42,4 +45,3 @@ module ActiveAdmin
 
   end
 end
-

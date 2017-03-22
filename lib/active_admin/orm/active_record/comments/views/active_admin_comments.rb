@@ -12,7 +12,7 @@ module ActiveAdmin
 
         def build(resource)
           @resource = resource
-          @comments = ActiveAdmin::Comment.find_for_resource_in_namespace resource, active_admin_namespace.name
+          @comments = ActiveAdmin::Comment.find_for_resource_in_namespace(resource, active_admin_namespace.name).reject {|e| e.is_reply?}
           super(title, for: resource)
           build_comments
         end

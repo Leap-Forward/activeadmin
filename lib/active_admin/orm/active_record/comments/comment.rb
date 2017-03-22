@@ -8,6 +8,13 @@ module ActiveAdmin
     has_many :replies, inverse_of: :replied_to, class_name: "ActiveAdmin::Comment", foreign_key: "replied_to_id", dependent: :destroy
     belongs_to :replied_to, class_name: "ActiveAdmin::Comment", foreign_key: "replied_to_id",  inverse_of: :replies
 
+    def is_reply?
+      !self.replied_to.nil?
+    end
+
+    def original_comment
+      is_reply? ? self.replied_to.original_comment : self
+    end
 
     if defined? ProtectedAttributes
       attr_accessible :resource, :resource_id, :resource_type, :body, :namespace

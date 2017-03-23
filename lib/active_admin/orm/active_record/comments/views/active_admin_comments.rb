@@ -25,7 +25,7 @@ module ActiveAdmin
 
         def build_comments
           build_comment_form
-          @comments.any? ? build_comment_list(@comments) : build_empty_message
+          @comments.any? ? build_comment_list(@comments.sort_by {|e| e.updated_at}.reverse!) : build_empty_message
         end
 
         def build_comment_list comments, indent=0

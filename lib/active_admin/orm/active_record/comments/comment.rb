@@ -7,6 +7,7 @@ module ActiveAdmin
     belongs_to :author,   polymorphic: true
     has_many :replies, inverse_of: :replied_to, class_name: "ActiveAdmin::Comment", foreign_key: "replied_to_id", dependent: :destroy
     belongs_to :replied_to, class_name: "ActiveAdmin::Comment", foreign_key: "replied_to_id",  inverse_of: :replies
+    has_many :email_responders, class_name: 'EmailResponder', foreign_key: :resource_id, foreign_type: :resource_type, inverse_of: :resource
 
     def is_reply?
       !self.replied_to.nil?

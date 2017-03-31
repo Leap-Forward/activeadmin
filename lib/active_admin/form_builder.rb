@@ -36,7 +36,7 @@ module ActiveAdmin
 
     def has_many(assoc, options = {}, &block)
       # remove options that should not render as attributes
-      custom_settings = :new_record, :allow_destroy, :heading, :sortable, :sortable_start
+      custom_settings = :new_record, :new_record_class, :allow_destroy, :heading, :sortable, :sortable_start
       builder_options = {new_record: true}.merge! options.slice  *custom_settings
       options         = {for: assoc      }.merge! options.except *custom_settings
       options[:class] = [options[:class], "inputs has_many_fields"].compact.join(' ')
@@ -68,7 +68,7 @@ module ActiveAdmin
         contents = without_wrapper { inputs(options, &form_block) } || "".html_safe
 
         if builder_options[:new_record]
-          contents << js_for_has_many(assoc, form_block, template, builder_options[:new_record], options[:class])
+          contents << js_for_has_many(assoc, form_block, template, builder_options[:new_record], [builder_options[:new_record_class], options[:class]].compact.join(' '))
         else
           contents
         end

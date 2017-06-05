@@ -1,5 +1,6 @@
 require 'active_admin/views'
 require 'active_admin/views/components/panel'
+require 'active_admin/helpers/link_helper'
 
 module ActiveAdmin
   module Comments
@@ -47,7 +48,7 @@ module ActiveAdmin
               end
             end
             div class: "active_admin_comment_body indent-#{indent}" do
-              simple_format comment.body
+              simple_format LinkHelper.new.auto_link_urls(comment.body)
             end
           end
         end
